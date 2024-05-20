@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Match di Oggi</h1>
+
+<!-- Form di ricerca -->
+<form method="get" action="{% url 'matches_today' %}">
+    <div>
+        <label for="date">Data:</label>
+        <input type="date" id="date" name="date" value="{{ request.GET.date|default:'' }}">
+    </div>
+    <div>
+        <label for="player">Giocatore:</label>
+        <input type="text" id="player" name="player" placeholder="Nome giocatore" value="{{ request.GET.player|default:'' }}">
+    </div>
+    <button type="submit">Cerca</button>
+</form>
+
+<!-- Elenco dei tornei e dei match -->
+{% for tournament, matches in tournaments.items %}
+    <h2>{{ tournament }}</h2>
+    <ul>
+        {% for match in matches %}
+        <li>
+            <a href="{% url 'match_details' match.id %}">{{ match.event_first_player }} vs {{ match.event_second_player }}</a> - {{ match.event_date }}
+        </li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+{% endblock %}

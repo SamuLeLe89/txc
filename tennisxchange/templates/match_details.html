@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="match-details">
+    <h1>{{ match.tournament_name }} - Round {{ match.tournament_round }}</h1>
+    <h2>{{ match.event_first_player }} {{ first_score }} - {{ second_score }} {{ match.event_second_player }}</h2>
+    <p>{{ match.event_date }} alle {{ match.event_time }}</p>
+    <p>{{ match.home_odds }} / {{ match.away_odds }}</p>
+    <button id="btn-stats">Statistiche</button>
+    <button id="btn-pointbypoint">Point-by-Point</button>
+
+    <div id="match-stats" style="display: none;">
+        <h3>Statistiche del Match</h3>
+        {% for stat_name, players_stats in stats.items %}
+            <div class="stat-row">
+                <div class="player-stat left">
+                    {% for player_name, player_stats in players_stats.items %}
+                        {% if forloop.first %}
+                            <strong>{{ player_name }}:</strong> {{ player_stats.value }} ({{ player_stats.won }}/{{ player_stats.total }})
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="stat-name">{{ stat_name }}</div>
+                <div class="player-stat right">
+                    {% for player_name, player_stats in players_stats.items %}
+                        {% if forloop.last %}
+                            <strong>{{ player_name }}:</strong> {{ player_stats.value }} ({{ player_stats.won }}/{{ player_stats.total }})
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="point-by-point" style="display: none;">
+        <div class="set-buttons">
+            {% for detail in details %}
+            <button class="btn-set" data-set="{{ forloop.counter }}">Set {{ forloop.counter }}</button>
+            {% endfor %}
+        </div>
+
+        {% for detail in details %}
+        <div class="set-detail" id="set-detail-{{ forloop.counter }}" style="display: none;">
+            <h3>Dettaglio Set {{ detail.set.score_set }}</h3>
+            <h4>Set {{ detail.set.score_first }} - {{ detail.set.score_second }}</h4>
+            {% for game_detail in detail.games %}
+            <div class="game">
+                <div class="game-info">
+                    <span class="{% if game_detail.game.player_served == 'First Player' %}serve-left{% else %}serve-right{% endif %} serve-indicator">🎾</span>
+                    <span class="score">{{ game_detail.game.set_score }}</span>
+                </div>
+                {% if game_detail.is_break %}
+                    <span class="break">Break by {{ game_detail.game.game_winner }}</span>
+                {% endif %}
+                <div class="game-details">
+                    <ul>
+                        {% for point in game_detail.points %}
+                            <li>{{ point.game_score }}{% if point.break_point == 'yes' %} (BP){% endif %}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            {% endfor %}
+            {% if detail.tiebreak %}
+                <h5>Tiebreak: {{ detail.tiebreak.score_first_player }} - {{ detail.tiebreak.score_second_player }}</h5>
+                <ul>
+                    {% for point in detail.tiebreak_points %}
+                        <li>{{ point.score }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

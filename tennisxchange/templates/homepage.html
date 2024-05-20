@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Homepage</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <!-- Include il file JavaScript esterno -->
+    <script src="{% static 'js/autocomplete.js' %}"></script>
+</head>
+<body>
+    <h1>Scegli un Giocatore</h1>
+    <form action="{% url 'homepage' %}" method="get">
+        <input type="text" id="search-input" name="q" placeholder="Cerca giocatore per cognome..." value="{{ query }}">
+        <button type="submit">Cerca</button>
+    </form>
+    <ul>
+        {% for giocatore in giocatori %}
+            <li>
+                <a href="{% url 'dettagli_giocatore' giocatore.player_key %}">{{ giocatore.player }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

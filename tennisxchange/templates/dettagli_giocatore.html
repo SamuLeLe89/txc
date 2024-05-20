@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Dettagli Giocatore</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dettagli_giocatore.css' %}">
+    <script src="{% static 'js/dettagli_giocatore.js' %}"></script>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+</head>
+<body>
+    <a href="{% url 'homepage' %}">Torna alla Homepage</a>
+    <h1>{{ giocatore.player }}</h1>
+    
+    <input type="hidden" id="player-key" value="{{ giocatore.player_key }}">
+
+    <form action="" method="get">
+        <label for="num_matches">N. Match:</label>
+        <select name="num_matches" id="num_matches" onchange="this.form.submit()">
+            <option value="">Tutte</option>
+            <option value="1">Ultima</option>
+            <option value="2">Ultimi 2 match</option>
+            <option value="5">Ultimi 5 match</option>
+            <option value="10">Ultimi 10 match</option>
+        </select>
+    </form>
+
+    <button onclick="loadStatisticsForAllMatches()" class="load-stats-btn">Carica statistiche per tutti i match</button>
+    <button onclick="loadAllMatchDetails()">Point by Point</button>
+
+    <div class="cards-container">
+        {% for match in matches %}
+        <div class="card" data-match-id="{{ match.id }}">
+            <div class="header">
+                {{ match.event_final_result }}
+                <span class="set-scores">({% for set in match.sets.all %}{{ set.score_first }}-{{ set.score_second }}{% if not forloop.last %}, {% endif %}{% endfor %})</span>
+            </div>
+            <div class="body">
+                {{ match.event_date }}<br>
+                {{ match.tournament_name }}<br>
+                {{ match.tournament_round }}<br>
+                <span class="versus"><strong>{{ match.event_second_player }}</strong><br></span>
+                <strong>q:</strong>{{ match.event_qualification }}<br>
+                <strong>ODD:</strong> {{ match.home_odds|floatformat:2 }}<br>
+                <strong>Stato:</strong> {{ match.event_status }}
+            </div>
+            <div class="surface">{{ match.tournament_key.superficie }}</div>
+            <div class="footer">
+                <a href="{% url 'match_details' match.id %}">Vai al match</a><br>
+            </div>
+            <div id="details-{{ match.id }}" class="details-container" style="display:none;"></div>
+            <div id="stats-{{ match.id }}" class="stats-container" style="display:none;"></div>
+            <div id="set-stats-{{ match.id }}" class="set-stats-container" style="display:none;"></div>
+        </div>
+        {% empty %}
+        <p>Nessun match trovato per questo giocatore.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{% load static %}  <!-- Carica la libreria per il tag static -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TennisXchange</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">  <!-- Favicon aggiunta qui -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">  <!-- Utilizza il tag static per includere il CSS -->
+    {% block extra_head %}{% endblock %}  <!-- Blocco per stili o script aggiuntivi -->
+</head>
+<body>
+    <header>
+        <h1>TennisXchange</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'matches_today' %}">Partite di Oggi</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Qui verrà inserito il contenuto specifico di ciascuna pagina -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 TennisXchange. Tutti i diritti riservati.</p>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>  <!-- Utilizza il tag static per includere il JavaScript -->
+</body>
+</html>
