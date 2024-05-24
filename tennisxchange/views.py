@@ -95,11 +95,12 @@ def match_details(request, match_id):
 
 from .utils import invert_match_result  # Assicurati di importare la funzione correttamente
 
+
 def dettagli_giocatore(request, player_key):
-    num_matches = request.GET.get('num_matches', None)
+    num_matches = request.GET.get('num_matches', '')
+    surface_filter = request.GET.get('surface_filter', '')
     giocatore = get_object_or_404(Giocatore, player_key=player_key)
 
-    # Filtro per includere solo i match con "event_status" desiderati
     desired_statuses = ['Finished', 'Retired']
     matches_query = Match.objects.filter(
         (Q(first_player_key=giocatore) | Q(second_player_key=giocatore)) & 
@@ -114,12 +115,23 @@ def dettagli_giocatore(request, player_key):
         )
     )
 
+    if surface_filter:
+        if surface_filter == 'Hard':
+            matches_query = matches_query.filter(
+                Q(tournament_key__superficie__icontains=surface_filter) | 
+                Q(tournament_key__superficie__icontains='Hard (Indoor)')
+            )
+        else:
+            matches_query = matches_query.filter(tournament_key__superficie__icontains=surface_filter)
+
     matches = [invert_match_result(match) for match in matches_query]
 
     if num_matches:
         matches = matches[:int(num_matches)]
 
     return render(request, 'dettagli_giocatore.html', {'giocatore': giocatore, 'matches': matches})
+
+
 
 
 

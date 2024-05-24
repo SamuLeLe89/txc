@@ -1,3 +1,4 @@
+/* Mantieni le regole esistenti che non necessitano di modifiche */
 .card {
     background-color: rgba(1, 44, 70, 0.681);
     color: rgba(255, 255, 255, 0.776);
@@ -7,9 +8,9 @@
     flex: 0 0 auto;
     margin: 5px;
     padding: 8px;
-    width: 26%;
+    width: 20%;
     vertical-align: top;
-    text-align: center;
+    text-align: center; 
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
@@ -35,12 +36,12 @@
 }
 
 .body {
-    padding: 5px;
+    padding: 10px;
     font-size: 14px;
 }
 
 .versus {
-    font-size: larger;
+    font-size: 1.4em;
 }
 
 .surface {
@@ -67,7 +68,15 @@
     border-radius: 14px;
 }
 
+/* Modifica le regole per il layout dei giochi */
 .game {
+    display: flex;
+    justify-content: space-between;
+    height: 0.5em;
+    align-content: center;
+    align-items: center;
+    margin-left: 1.8em;
+    margin-right: 1.8em;
     margin-top: 5px;
     background-color: #444;
     color: #ddd;
@@ -75,65 +84,40 @@
     border-radius: 4px;
 }
 
-.game-number {
-    color: #f2f2f2;
-    margin-right: 10px;
-}
-
 .game-score {
     color: #f2f2f2;
     font-weight: bold;
     font-size: larger;
+    flex-grow: 1;
+    text-align: left; 
+    margin: 0.3em;
 }
 
-.points {
-    margin-top: 3px;
-    color: #f2f2f2;
-}
-
-.point {
-    margin-right: 5px;
-    display: inline-block;
+.serve-receive {
     font-size: smaller;
+    font-weight: bold;
+    text-align: right; 
+    margin-left: 10px;
 }
 
-.tiebreak {
-    margin-top: 5px;
-    background-color: #e2b30bea;
-    color: #fff;
-    padding: 5px;
-    border-radius: 4px;
-}
-.tiebreak-point {
-    margin-top: 5px;
-    background-color: #e2b30b85;
-    color: #fff;
-    padding: 5px;
-    border-radius: 4px;
+.break-point-container {
+    display: flex;
 }
 
-.stats-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Due colonne di uguale larghezza */
-    gap: 5px; /* Aggiunge spazio tra le colonne */
-    text-align: left; /* Allinea il testo a sinistra per leggibilità */
-    margin: 20px auto;
-    padding: 15px;
-    width: 88%;
-    background-color: #33393cb4;
-    color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+.break-point {
+    display: inline-block;
+    width: 8px; /* Puoi regolare la dimensione secondo le tue esigenze */
+    height: 8px;
+    border-radius: 50%;
+    margin-left: 3px;
 }
 
-.stat-name, .player-stat-value {
-    padding: 5px; /* Riduci il padding per una migliore disposizione in griglia */
-    border: 2px solid white;
-    border-radius: 5px;
+.break-point.red {
+    background-color: rgba(255, 0, 0, 0.504);
 }
 
-.player-stat-value {
-    background-color: #4C4C4C; /* Distingue i valori con un colore di sfondo differente */
+.break-point.green {
+    background-color: rgba(0, 255, 0, 0.52);
 }
 
 .break-win {
@@ -154,19 +138,43 @@
     margin-left: 5px;
 }
 
-.break-point {
-    display: inline-block;
-    width: 8px; /* Puoi regolare la dimensione secondo le tue esigenze */
-    height: 8px;
-    border-radius: 50%;
-    margin-left: 3px;
+
+/* Nascondi i punti del tiebreak */
+.tiebreak {
+    background-color: black;
+    margin-top: 5px;
+    color: #ffffff;
+    padding: 5px;
+    border-radius: 14px;
 }
 
-.break-point.red {
-    background-color: rgba(255, 0, 0, 0.504);
+/* Nascondi i punti del tiebreak */
+.tiebreak-point.hidden {
+    display: none;
 }
 
-.break-point.green {
-    background-color: rgba(0, 255, 0, 0.52);
+
+/* Mantieni le regole esistenti */
+.stats-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Due colonne di uguale larghezza */
+    gap: 5px; /* Aggiunge spazio tra le colonne */
+    text-align: left; /* Allinea il testo a sinistra per leggibilità */
+    margin: 10px auto;
+    padding: 15px;
+    width: 68%;
+    background-color: #33393cb4;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+.stat-name, .player-stat-value {
+    padding: 5px; /* Riduci il padding per una migliore disposizione in griglia */
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+.player-stat-value {
+    background-color: #4C4C4C; /* Distingue i valori con un colore di sfondo differente */
+}

@@ -42,10 +42,10 @@ function loadMatchDetails(matchId, playerKey) {
 
 function generateMatchDetailsHtml(data, matchId) {
     let detailsHtml = `<div><strong>Match ID: ${data.match_id}</strong></div>`;
-    data.sets.forEach(set => {
+    data.sets.forEach((set, setIndex) => {
         const setWinner = calculateSetWinnerFromHTML(matchId, set.set_number);
         detailsHtml += `<div class='set'><strong>Set ${set.set_number} - Winner: ${setWinner}</strong></div>`;
-        set.games.forEach(game => {
+        set.games.forEach((game, gameIndex) => {
             let breakInfo = '';
             if (game.serve_lost) {
                 if (game.serve_lost === 'First Player') {
@@ -65,12 +65,21 @@ function generateMatchDetailsHtml(data, matchId) {
                     breakPointsHtml += '<span class="break-point green"></span>';
                 }
             });
-            const breakPointsText = breakPoints.length > 0 ? breakPointsHtml : '';
+            const breakPointsText = breakPoints.length > 0 ? `<div class="break-point-container">${breakPointsHtml}</div>` : '';
+
+            // Aggiungi l'indicazione 'Serve' o 'Receive' per il primo gioco del set
+            let serveReceiveInfo = '';
+            if (gameIndex === 0) {
+                serveReceiveInfo = game.player_served === 'First Player' ? '<span class="serve-receive">(S)</span>' : '<span class="serve-receive">(R)</span>';
+            }
 
             detailsHtml += `
                 <div class='game'>
-                    <span class='game-score'>${game.score} ${breakPointsText}</span>
+                    <span class='game-score'>${game.score}</span>
                     ${breakInfo}
+                    ${breakPointsText}
+                    ${serveReceiveInfo}
+                    
                 </div>`;
         });
 
@@ -79,13 +88,12 @@ function generateMatchDetailsHtml(data, matchId) {
             const tiebreakResult = tiebreakWinner === 'First Player' ? 'Win' : 'Loss';
             detailsHtml += `<div class='tiebreak'>Tiebreak: ${tiebreakResult} (${set.tiebreak.score_first_player} - ${set.tiebreak.score_second_player})</div>`;
             set.tiebreak.points.forEach(point => {
-                detailsHtml += `<div class='tiebreak-point'>Punto ${point.point_number}: ${point.score} - ${point.player_served} serve, ${point.point_winner} win, mini-break: ${point.is_mini_break ? 'Yes' : 'No'}</div>`;
+                detailsHtml += `<div class='tiebreak-point hidden'>Punto ${point.point_number}: ${point.score} - ${point.player_served} serve, ${point.point_winner} win, mini-break: ${point.is_mini_break ? 'Yes' : 'No'}</div>`;
             });
         }
     });
     return detailsHtml;
 }
-
 
 
 function calculateTiebreakWinner(tiebreak) {
@@ -480,11 +488,6 @@ function toggleSetStats(matchId, setNumber) {
         setStatsDiv.style.display = setStatsDiv.style.display === 'none' ? 'block' : 'none';
     }
 }
-
-
-
-
-
 
 
 

@@ -5,7 +5,11 @@
     <title>Dettagli Giocatore</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/dettagli_giocatore.css' %}">
-    <script src="{% static 'js/dettagli_giocatore.js' %}"></script>
+    <script src="{% static 'js/dettagli_giocatore/generate_html.js' %}" defer></script>
+    <script src="{% static 'js/dettagli_giocatore/calculate_statistics.js' %}" defer></script>
+    <script src="{% static 'js/dettagli_giocatore/display_statistics.js' %}" defer></script>
+    <script src="{% static 'js/dettagli_giocatore/load_details.js' %}" defer></script>
+    <script src="{% static 'js/dettagli_giocatore/main.js' %}" defer></script>
     <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
@@ -17,16 +21,23 @@
     <form action="" method="get">
         <label for="num_matches">N. Match:</label>
         <select name="num_matches" id="num_matches" onchange="this.form.submit()">
-            <option value="">Tutte</option>
-            <option value="1">Ultima</option>
-            <option value="2">Ultimi 2 match</option>
-            <option value="5">Ultimi 5 match</option>
-            <option value="10">Ultimi 10 match</option>
+            <option value="" {% if not request.GET.num_matches %}selected{% endif %}>Tutte</option>
+            <option value="1" {% if request.GET.num_matches == "1" %}selected{% endif %}>Ultima</option>
+            <option value="2" {% if request.GET.num_matches == "2" %}selected{% endif %}>Ultimi 2 match</option>
+            <option value="5" {% if request.GET.num_matches == "5" %}selected{% endif %}>Ultimi 5 match</option>
+            <option value="10" {% if request.GET.num_matches == "10" %}selected{% endif %}>Ultimi 10 match</option>
+        </select>
+        
+        <label for="surface_filter">Superficie:</label>
+        <select name="surface_filter" id="surface_filter" onchange="this.form.submit()">
+            <option value="" {% if not request.GET.surface_filter %}selected{% endif %}>Tutte</option>
+            <option value="Hard" {% if request.GET.surface_filter == "Hard" %}selected{% endif %}>Hard</option>
+            <option value="Clay" {% if request.GET.surface_filter == "Clay" %}selected{% endif %}>Clay</option>
+            <option value="Grass" {% if request.GET.surface_filter == "Grass" %}selected{% endif %}>Grass</option>
         </select>
     </form>
 
-    <button onclick="loadStatisticsForAllMatches()" class="load-stats-btn">Carica statistiche per tutti i match</button>
-    <button onclick="loadAllMatchDetails()">Point by Point</button>
+    <button id="load-all-details">Point by Point</button>
 
     <div class="cards-container">
         {% for match in matches %}
@@ -48,8 +59,8 @@
             <div class="footer">
                 <a href="{% url 'match_details' match.id %}">Vai al match</a><br>
             </div>
+            <div id="stats-{{ match.id }}" class="stats-container"></div>
             <div id="details-{{ match.id }}" class="details-container" style="display:none;"></div>
-            <div id="stats-{{ match.id }}" class="stats-container" style="display:none;"></div>
             <div id="set-stats-{{ match.id }}" class="set-stats-container" style="display:none;"></div>
         </div>
         {% empty %}
