@@ -1,0 +1,180 @@
+/* Mantieni le regole esistenti che non necessitano di modifiche */
+.card {
+    background-color: rgba(1, 44, 70, 0.681);
+    color: rgba(255, 255, 255, 0.776);
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    border: 1px solid #ccc;
+    display: inline-block;
+    flex: 0 0 auto;
+    margin: 5px;
+    padding: 8px;
+    width: 20%;
+    vertical-align: top;
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.cards-container {
+    display: flex;
+    overflow-x: auto; /* Abilita lo scorrimento orizzontale */
+    white-space: nowrap; /* Evita che gli elementi vadano a capo */
+    padding: 10px;
+}
+
+.header {
+    background-color: #f2f2f2;
+    color: black;
+    padding: 5px;
+    font-size: 17px;
+}
+
+.set-scores {
+    font-size: 0.75em;
+    color: #666;
+    margin-left: 10px;
+    font-style: oblique;
+}
+
+.body {
+    padding: 10px;
+    font-size: 14px;
+}
+
+.versus {
+    font-size: 1.4em;
+}
+
+.surface {
+    background-color: #33393c;
+    padding: 5px;
+    font-size: 18px;
+}
+
+.footer {
+    background-color: #f2f2f2;
+    padding: 5px;
+    font-size: 14px;
+    width: 50%;
+}
+
+.set {
+    margin-top: 10px;
+    margin-left: 40px;
+    margin-right: 40px;
+    padding: 15px;
+    background-color: #9b462fad;
+    color: white;
+    font-weight: bold;
+    border-radius: 14px;
+}
+
+/* Modifica le regole per il layout dei giochi */
+.game {
+    display: flex;
+    justify-content: space-between;
+    height: 0.5em;
+    align-content: center;
+    align-items: center;
+    margin-left: 1.8em;
+    margin-right: 1.8em;
+    margin-top: 5px;
+    background-color: #444;
+    color: #ddd;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.game-score {
+    color: #f2f2f2;
+    font-weight: bold;
+    font-size: larger;
+    flex-grow: 1;
+    text-align: left; 
+    margin: 0.3em;
+}
+
+.serve-receive {
+    font-size: smaller;
+    font-weight: bold;
+    text-align: right; 
+    margin-left: 10px;
+}
+
+.break-point-container {
+    display: flex;
+}
+
+.break-point {
+    display: inline-block;
+    width: 8px; /* Puoi regolare la dimensione secondo le tue esigenze */
+    height: 8px;
+    border-radius: 50%;
+    margin-left: 3px;
+}
+
+.break-point.red {
+    background-color: rgba(255, 0, 0, 0.504);
+}
+
+.break-point.green {
+    background-color: rgba(0, 255, 0, 0.52);
+}
+
+.break-win {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background-color: rgb(0, 255, 0);
+    border-radius: 50%;
+    margin-left: 5px;
+}
+
+.break-loss {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+
+
+/* Nascondi i punti del tiebreak */
+.tiebreak {
+    background-color: black;
+    margin-top: 5px;
+    color: #ffffff;
+    padding: 5px;
+    border-radius: 14px;
+}
+
+/* Nascondi i punti del tiebreak */
+.tiebreak-point.hidden {
+    display: none;
+}
+
+
+/* Mantieni le regole esistenti */
+.stats-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Due colonne di uguale larghezza */
+    gap: 5px; /* Aggiunge spazio tra le colonne */
+    text-align: left; /* Allinea il testo a sinistra per leggibilità */
+    margin: 10px auto;
+    padding: 15px;
+    width: 68%;
+    background-color: #33393cb4;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.stat-name, .player-stat-value {
+    padding: 5px; /* Riduci il padding per una migliore disposizione in griglia */
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+.player-stat-value {
+    background-color: #4C4C4C; /* Distingue i valori con un colore di sfondo differente */
+}
