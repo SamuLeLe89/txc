@@ -1,33 +1,96 @@
-// load_details.js
 (function() {
     function loadAllMatchDetails() {
         const playerKey = document.getElementById('player-key').value;
         document.querySelectorAll('.card').forEach(card => {
             const matchId = card.dataset.matchId;
-            loadMatchDetails(matchId, playerKey);
+            loadMatchDetails(matchId, playerKey, true);
         });
     }
 
-    function loadMatchDetails(matchId, playerKey) {
-        const detailsDiv = document.getElementById(`details-${matchId}`);
-
-        if (detailsDiv.style.display === 'none' || !detailsDiv.innerHTML.trim()) {
-            fetch(`/match/details/json/${matchId}?player_key=${playerKey}`)
-                .then(response => response.json())
-                .then(data => {
-                    detailsDiv.innerHTML = generateMatchDetailsHtml(data, matchId);
-                    detailsDiv.style.display = 'block';
-                })
-                .catch(error => {
-                    console.error('Errore nel caricamento dei dettagli del match:', error);
-                    detailsDiv.innerHTML = `<div class="error">Errore nel caricamento dei dettagli del match</div>`;
-                    detailsDiv.style.display = 'block';
-                });
-        } else {
-            detailsDiv.style.display = 'none';
-        }
+    function loadMatchDetails(matchId, playerKey, loadFullDetails = false) {
+        return new Promise((resolve, reject) => {
+            const detailsDiv = document.getElementById(`details-${matchId}`);
+            const setStatsDiv = document.getElementById(`set-stats-${matchId}`);
+    
+            if (loadFullDetails && (detailsDiv.style.display === 'none' || !detailsDiv.innerHTML.trim())) {
+                fetch(`/match/details/json/${matchId}?player_key=${playerKey}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.sets.forEach((set, index) => {
+                            if (index > 0) {
+                                const prevSet = data.sets[index - 1];
+                                const prevSetWinner = prevSet.score_first > prevSet.score_second ? 'Win' : 'Loss';
+                                set.previousSetResult = prevSetWinner;
+                            } else {
+                                set.previousSetResult = 'None';
+                            }
+                        });
+    
+                        detailsDiv.innerHTML = generateMatchDetailsHtml(data, matchId);
+                        detailsDiv.style.display = 'block';
+    
+                        const headerElement = document.querySelector(`.card[data-match-id="${matchId}"] .header`);
+                        if (!headerElement.querySelector('.match-winner')) {
+                            const matchWinner = calculateMatchWinnerFromHTML(matchId);
+                            const matchWinnerElement = document.createElement('div');
+                            matchWinnerElement.classList.add('match-winner');
+                            matchWinnerElement.innerHTML = `<strong>${matchWinner}</strong>`;
+                            headerElement.appendChild(matchWinnerElement);
+    
+                            if (matchWinner === 'Win') {
+                                headerElement.parentElement.classList.add('match-result-win');
+                            } else if (matchWinner === 'Loss') {
+                                headerElement.parentElement.classList.add('match-result-loss');
+                            }
+                        }
+    
+                        const pointsStats = calculateAdvancedStatistics(data);
+                        const gamesStats = calculateGameStatistics(data);
+                        const breakPointsStats = calculateBreakPoints(data);
+    
+                        displaySetStatistics(data.sets, matchId, pointsStats, gamesStats, breakPointsStats);
+                        resolve(); // Risolve la promessa una volta che i dettagli sono stati caricati e visualizzati
+                    })
+                    .catch(error => {
+                        console.error('Errore nel caricamento dei dettagli del match:', error);
+                        detailsDiv.innerHTML = `<div class="error">Errore nel caricamento dei dettagli del match</div>`;
+                        detailsDiv.style.display = 'block';
+                        reject(error); // Rigetta la promessa in caso di errore
+                    });
+            } else if (!loadFullDetails) {
+                fetch(`/match/details/json/${matchId}?player_key=${playerKey}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const headerElement = document.querySelector(`.card[data-match-id="${matchId}"] .header`);
+                        if (!headerElement.querySelector('.match-winner')) {
+                            const matchWinner = calculateMatchWinnerFromHTML(matchId);
+                            const matchWinnerElement = document.createElement('div');
+                            matchWinnerElement.classList.add('match-winner');
+                            matchWinnerElement.innerHTML = `<strong>${matchWinner}</strong>`;
+                            headerElement.appendChild(matchWinnerElement);
+    
+                            if (matchWinner === 'Win') {
+                                headerElement.parentElement.classList.add('match-result-win');
+                            } else if (matchWinner === 'Loss') {
+                                headerElement.parentElement.classList.add('match-result-loss');
+                            }
+                        }
+    
+                        const pointsStats = calculateAdvancedStatistics(data);
+                        const gamesStats = calculateGameStatistics(data);
+                        const breakPointsStats = calculateBreakPoints(data);
+    
+                        displaySetStatistics(data.sets, matchId, pointsStats, gamesStats, breakPointsStats);
+                        resolve(); // Risolve la promessa una volta che i dettagli sono stati caricati e visualizzati
+                    })
+                    .catch(error => {
+                        console.error('Errore nel caricamento dei dettagli del match:', error);
+                        reject(error); // Rigetta la promessa in caso di errore
+                    });
+            }
+        });
     }
-
+    
     function loadMatchStatistics(matchId, playerKey) {
         const statsDiv = document.getElementById(`stats-${matchId}`);
 
@@ -77,7 +140,6 @@
     function generateManualStatisticsHtml(pointsStats, gamesStats, breakPointsStats, matchId) {
         let statsHTML = `<div class="manual-stats-container">`;
 
-        // Totali
         statsHTML += `
             <div class="advanced-stat">
                 <strong>Points:</strong> ${pointsStats.totalPointsWon}/${pointsStats.totalPoints} (${pointsStats.winPercentage}%)<br>
@@ -90,42 +152,57 @@
                 <strong>Break Points Converted:</strong> ${breakPointsStats.totalBreakPointsConverted} su ${breakPointsStats.totalBreakPointsFor}<br>
             </div>`;
 
-        // Divisi per set
-        statsHTML += `<div class="set-stats">`;
-        pointsStats.setStats.forEach((setStats, index) => {
-            const setNumber = index + 1;
-            const gamesSetStats = gamesStats.setStats[index];
-            const breakPointsSetStats = breakPointsStats.setStats[index];
-
-            statsHTML += `<button onclick="toggleSetStats(${matchId}, ${setNumber})">Set ${setNumber}</button>`;
-            statsHTML += `<div id="set-stats-${matchId}-${setNumber}" class="set-stat-details" style="display:none;">
-                <strong>Set ${setNumber} - Points:</strong> ${setStats.pointsWon}/${setStats.pointsWon + setStats.pointsLost} (${setStats.setWinPercentage})<br>
-                <strong>Set ${setNumber} - Service Points:</strong> ${setStats.servicePointsWon}/${setStats.servicePointsWon + setStats.servicePointsLost} (${setStats.setServiceWinPercentage})<br>
-                <strong>Set ${setNumber} - Return Points:</strong> ${setStats.returnPointsWon}/${setStats.returnPointsWon + setStats.returnPointsLost} (${setStats.setReturnWinPercentage})<br>
-                <strong>Set ${setNumber} - Games:</strong> ${gamesSetStats.gamesWon}/${gamesSetStats.gamesWon + gamesSetStats.gamesLost} (${gamesSetStats.setWinPercentage})<br>
-                <strong>Set ${setNumber} - Service Games:</strong> ${gamesSetStats.serviceGamesWon}/${gamesSetStats.serviceGamesWon + gamesSetStats.serviceGamesLost} (${gamesSetStats.setServiceWinPercentage})<br>
-                <strong>Set ${setNumber} - Return Games:</strong> ${gamesSetStats.returnGamesWon}/${gamesSetStats.returnGamesWon + gamesSetStats.returnGamesLost} (${gamesSetStats.setReturnWinPercentage})<br>
-                <strong>Set ${setNumber} - Break Points Saved:</strong> ${breakPointsSetStats.breakPointsSaved} su ${breakPointsSetStats.breakPointsAgainst}<br>
-                <strong>Set ${setNumber} - Break Points Converted:</strong> ${breakPointsSetStats.breakPointsConverted} su ${breakPointsSetStats.breakPointsFor}<br>`;
-            if (setStats.tiebreak) {
-                statsHTML += `<strong>Set ${setNumber} - Tiebreak Result:</strong> ${setStats.tiebreak}<br>`;
-            }
-            statsHTML += `</div>`;
-        });
-        statsHTML += `</div>`;
-
         statsHTML += `</div>`;
         return statsHTML;
     }
 
-    function toggleSetStats(matchId, setNumber) {
-        const setStatsDiv = document.getElementById(`set-stats-${matchId}-${setNumber}`);
-        if (setStatsDiv) {
-            setStatsDiv.style.display = setStatsDiv.style.display === 'none' ? 'block' : 'none';
-        }
+    function calculateAndDisplaySet1Statistics() {
+        const matches = document.querySelectorAll('.card');
+        let totalPoints = 0;
+        let totalServicePoints = 0;
+        let totalReturnPoints = 0;
+        let totalGames = 0;
+        let totalServiceGames = 0;
+        let totalReturnGames = 0;
+        let totalBreakPointsSaved = 0;
+        let totalBreakPointsConverted = 0;
+    
+        matches.forEach(match => {
+            const set1Stats = match.querySelector('#set-stats-' + match.dataset.matchId + '-1');
+    
+            if (set1Stats) {
+                const points = parseInt(set1Stats.querySelector('.points').textContent.split('/')[0]);
+                const servicePoints = parseInt(set1Stats.querySelector('.service-points').textContent.split('/')[0]);
+                const returnPoints = parseInt(set1Stats.querySelector('.return-points').textContent.split('/')[0]);
+                const games = parseInt(set1Stats.querySelector('.games').textContent.split('/')[0]);
+                const serviceGames = parseInt(set1Stats.querySelector('.service-games').textContent.split('/')[0]);
+                const returnGames = parseInt(set1Stats.querySelector('.return-games').textContent.split('/')[0]);
+                const breakPointsSaved = parseInt(set1Stats.querySelector('.break-points-saved').textContent.split(' ')[0]);
+                const breakPointsConverted = parseInt(set1Stats.querySelector('.break-points-converted').textContent.split(' ')[0]);
+    
+                totalPoints += points;
+                totalServicePoints += servicePoints;
+                totalReturnPoints += returnPoints;
+                totalGames += games;
+                totalServiceGames += serviceGames;
+                totalReturnGames += returnGames;
+                totalBreakPointsSaved += breakPointsSaved;
+                totalBreakPointsConverted += breakPointsConverted;
+            }
+        });
+    
+        document.getElementById('set1-points').textContent = totalPoints;
+        document.getElementById('set1-service-points').textContent = totalServicePoints;
+        document.getElementById('set1-return-points').textContent = totalReturnPoints;
+        document.getElementById('set1-games').textContent = totalGames;
+        document.getElementById('set1-service-games').textContent = totalServiceGames;
+        document.getElementById('set1-return-games').textContent = totalReturnGames;
+        document.getElementById('set1-break-points-saved').textContent = totalBreakPointsSaved;
+        document.getElementById('set1-break-points-converted').textContent = totalBreakPointsConverted;
     }
-
-    // Esporta le funzioni nel contesto globale
+    
+    // Assicurati che la funzione sia disponibile globalmente
+    window.calculateAndDisplaySet1Statistics = calculateAndDisplaySet1Statistics;
     window.loadAllMatchDetails = loadAllMatchDetails;
     window.loadMatchDetails = loadMatchDetails;
     window.loadMatchStatistics = loadMatchStatistics;

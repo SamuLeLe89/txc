@@ -1,25 +1,42 @@
 (function() {
     function displaySetStatistics(sets, matchId, pointsStats, gamesStats, breakPointsStats) {
+        // Assicurati che calculateFirstBreakAndCounter sia disponibile nel contesto globale
+        const firstBreakStats = window.calculateFirstBreakAndCounter({ sets });
+
         let statsHTML = '';
         sets.forEach((set, index) => {
             const setNumber = set.set_number;
             const pointsSetStats = pointsStats.setStats[index];
             const gamesSetStats = gamesStats.setStats[index];
             const breakPointsSetStats = breakPointsStats.setStats[index];
+            const firstBreakStat = firstBreakStats.find(stat => stat.setNumber === setNumber);
 
-            statsHTML += `<button onclick="toggleSetStats(${matchId}, ${setNumber})">Set ${setNumber}</button>`;
-            statsHTML += `<div id="set-stats-${matchId}-${setNumber}" class="set-stat-details" style="display:none;">
-                <strong>Set ${setNumber} - Points:</strong> ${pointsSetStats.pointsWon}/${pointsSetStats.pointsWon + pointsSetStats.pointsLost} (${pointsSetStats.setWinPercentage})<br>
-                <strong>Set ${setNumber} - Service Points:</strong> ${pointsSetStats.servicePointsWon}/${pointsSetStats.servicePointsWon + pointsSetStats.servicePointsLost} (${pointsSetStats.setServiceWinPercentage})<br>
-                <strong>Set ${setNumber} - Return Points:</strong> ${pointsSetStats.returnPointsWon}/${pointsSetStats.returnPointsWon + pointsSetStats.returnPointsLost} (${pointsSetStats.setReturnWinPercentage})<br>
-                <strong>Set ${setNumber} - Games:</strong> ${gamesSetStats.gamesWon}/${gamesSetStats.gamesWon + gamesSetStats.gamesLost} (${gamesSetStats.setWinPercentage})<br>
-                <strong>Set ${setNumber} - Service Games:</strong> ${gamesSetStats.serviceGamesWon}/${gamesSetStats.serviceGamesWon + gamesSetStats.serviceGamesLost} (${gamesSetStats.setServiceWinPercentage})<br>
-                <strong>Set ${setNumber} - Return Games:</strong> ${gamesSetStats.returnGamesWon}/${gamesSetStats.returnGamesWon + gamesSetStats.returnGamesLost} (${gamesSetStats.setReturnWinPercentage})<br>
-                <strong>Set ${setNumber} - Break Points Saved:</strong> ${breakPointsSetStats.breakPointsSaved} su ${breakPointsSetStats.breakPointsAgainst}<br>
-                <strong>Set ${setNumber} - Break Points Converted:</strong> ${breakPointsSetStats.breakPointsConverted} su ${breakPointsSetStats.breakPointsFor}<br>`;
-            if (pointsSetStats.tiebreak) {
-                statsHTML += `<strong>Set ${setNumber} - Tiebreak Result:</strong> ${pointsSetStats.tiebreak}<br>`;
+            const setWinner = window.calculateSetWinnerFromHTML(matchId, setNumber);
+
+            let prevSetResult = 'None';
+            if (index > 0) {
+                const prevSet = sets[index - 1];
+                prevSetResult = window.calculateSetWinnerFromHTML(matchId, prevSet.set_number);
             }
+
+            statsHTML += `
+                <div id="set-stats-${matchId}-${setNumber}" class="set-stat-details">
+                    <h3>Set ${setNumber} - Result: ${setWinner} (Prev Set: ${prevSetResult})</h3>
+                    <p><strong>Points:</strong> ${pointsSetStats.pointsWon}/${pointsSetStats.pointsWon + pointsSetStats.pointsLost} (${pointsSetStats.setWinPercentage})</p>
+                    <p><strong>Service Points:</strong> ${pointsSetStats.servicePointsWon}/${pointsSetStats.servicePointsWon + pointsSetStats.servicePointsLost} (${pointsSetStats.setServiceWinPercentage})</p>
+                    <p><strong>Return Points:</strong> ${pointsSetStats.returnPointsWon}/${pointsSetStats.returnPointsWon + pointsSetStats.returnPointsLost} (${pointsSetStats.setReturnWinPercentage})</p>
+                    <p><strong>Games:</strong> ${gamesSetStats.gamesWon}/${gamesSetStats.gamesWon + gamesSetStats.gamesLost} (${gamesSetStats.setWinPercentage})</p>
+                    <p><strong>Service Games:</strong> ${gamesSetStats.serviceGamesWon}/${gamesSetStats.serviceGamesWon + gamesSetStats.serviceGamesLost} (${gamesSetStats.setServiceWinPercentage})</p>
+                    <p><strong>Return Games:</strong> ${gamesSetStats.returnGamesWon}/${gamesSetStats.returnGamesWon + gamesSetStats.returnGamesLost} (${gamesSetStats.setReturnWinPercentage})</p>
+                    <p><strong>Break Points Saved:</strong> ${breakPointsSetStats.breakPointsSaved} su ${breakPointsSetStats.breakPointsAgainst}</p>
+                    <p><strong>Break Points Converted:</strong> ${breakPointsSetStats.breakPointsConverted} su ${breakPointsSetStats.breakPointsFor}</p>
+                    <p><strong>First Break:</strong> ${firstBreakStat.firstBreak}</p>
+                    <p><strong>Counter Break:</strong> ${firstBreakStat.counterBreak}</p>`;
+
+            if (pointsSetStats.tiebreak) {
+                statsHTML += `<p><strong>Tiebreak Result:</strong> ${pointsSetStats.tiebreak}</p>`;
+            }
+
             statsHTML += `</div>`;
         });
 
@@ -66,7 +83,6 @@
         }
     }
 
-    // Esporta le funzioni nel contesto globale
     window.displaySetStatistics = displaySetStatistics;
     window.displayTotalStatistics = displayTotalStatistics;
     window.toggleSetStats = toggleSetStats;

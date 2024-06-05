@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         api_base_url = "https://api.api-tennis.com/tennis/"
-        api_key = "6f15a3d9bcc8d98df56fc98ad62f127d183d162e829e85828f19a5c80004623d"
+        api_key = "c25039f39058094b7984f034bda40084e571a854d4bd4454533206008e8ee4c2"
         method = 'get_odds'
 
         oggi = datetime.now()
