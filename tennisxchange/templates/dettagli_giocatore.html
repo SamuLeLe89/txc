@@ -48,20 +48,20 @@
                 <span class="set-scores">({% for set in match.sets.all %}{{ set.score_first }}-{{ set.score_second }}{% if not forloop.last %}, {% endif %}{% endfor %})</span>
             </div>
             <div class="body">
-                {{ match.event_date }}<br>
-                {{ match.tournament_name }}<br>
-                {{ match.tournament_round }}<br>
+                <div class="data">{{ match.event_date }}</div>
+                <div class="torneo">{{ match.tournament_name }}</div>
+                <div class="turno">{{ match.tournament_round }}</div>
                 <span class="versus"><strong>{{ match.event_second_player }}</strong><br></span>
                 <strong>q:</strong>{{ match.event_qualification }}<br>
                 <strong>ODD:</strong> {{ match.home_odds|floatformat:2 }}<br>
-                <strong>Stato:</strong> {{ match.event_status }}
+                <div class="stato"><strong>Stato:</strong> {{ match.event_status }}</div>
             </div>
             <div class="surface">{{ match.tournament_key.superficie }}</div>
             <div class="footer">
                 <a href="{% url 'match_details' match.id %}">Vai al match</a><br>
             </div>
-            <div id="details-{{ match.id }}" class="details-container" style="display:none;"></div>
             <div id="stats-{{ match.id }}" class="stats-container"></div>
+            <div id="details-{{ match.id }}" class="details-container"></div>
             <div id="set-stats-{{ match.id }}" class="set-stats-container"></div>
         </div>
         {% empty %}
@@ -72,117 +72,175 @@
         <h2>Total Stats</h2>
         <p id="matches-won">Match Vinti: 0</p>
         <p id="matches-lost">Match Persi: 0</p>
+        <p id="total-sets-won">Set Vinti: 0/0</p>
+        <p id="total-points">Points: 0/0</p>
+        <p id="total-service-points">Service Points: 0/0</p>
+        <p id="total-return-points">Return Points: 0/0</p>
+        <p id="total-games">Games: 0/0</p>
+        <p id="total-service-games">Service Games: 0/0</p>
+        <p id="total-return-games">Return Games: 0/0</p>
+        <p id="total-break-points-saved">Break Points Saved: 0 su 0</p>
+        <p id="total-break-points-converted">Break Points Converted: 0 su 0</p>
+        <p id="total-tiebreaks-won">Tiebreak Vinti: 0/0</p>
+        <p id="total-first-to-lead">First to Lead: 0/0 (early: 0, late: 0)</p>
+        <p id="total-first-to-loss">First to Loss: 0/0 (early: 0, late: 0)</p>
+        <p id="total-counterbreak-win">Counter Break Win: 0/0</p>
+        <p id="total-counterbreak-loss">Counter Break Loss: 0/0</p>
     </div>
- <!-- Aggiungi questi campi per Set 1 -->
-<div id="aggregated-set1-stats">
-    <h4>Total Stats Set 1</h4>
-    <p>Set Win: <span id="set1-wins">0/0</span></p>
-    <p>Points: <span id="set1-points">0/0</span></p>
-    <p>Service Points: <span id="set1-service-points">0/0</span></p>
-    <p>Return Points: <span id="set1-return-points">0/0</span></p>
-    <p>Games: <span id="set1-games">0/0</span></p>
-    <p>Service Games: <span id="set1-service-games">0/0</span></p>
-    <p>Return Games: <span id="set1-return-games">0/0</span></p>
-    <p>Break Points Saved: <span id="set1-break-points-saved">0 su 0</span></p>
-    <p>Break Points Converted: <span id="set1-break-points-converted">0 su 0</span></p>
-    <p>Tiebreak Win: <span id="set1-tiebreak-wins">0/0</span></p>
-    <p>First to Lead: <span id="set1-first-to-lead">0/0</span></p>
-    <p>First to Loss: <span id="set1-first-to-loss">0/0</span></p>
-</div>
-
-<!-- Aggiungi questi campi per Set 2 -->
-<div id="aggregated-set2-stats">
-    <h4>Total Stats Set 2</h4>
-    <p>Set Win: <span id="set2-wins">0/0</span></p>
-    <p>Points: <span id="set2-points">0/0</span></p>
-    <p>Service Points: <span id="set2-service-points">0/0</span></p>
-    <p>Return Points: <span id="set2-return-points">0/0</span></p>
-    <p>Games: <span id="set2-games">0/0</span></p>
-    <p>Service Games: <span id="set2-service-games">0/0</span></p>
-    <p>Return Games: <span id="set2-return-games">0/0</span></p>
-    <p>Break Points Saved: <span id="set2-break-points-saved">0 su 0</span></p>
-    <p>Break Points Converted: <span id="set2-break-points-converted">0 su 0</span></p>
-    <p>Tiebreak Win: <span id="set2-tiebreak-wins">0/0</span></p>
-    <p>First to Lead: <span id="set2-first-to-lead">0/0</span></p>
-    <p>First to Loss: <span id="set2-first-to-loss">0/0</span></p>
-</div>
-<div id="aggregated-set2-after-win-stats">
-    <h4>Total Stats Set 2 - Set 1 Win</h4>
-    <p>Set Win: <span id="set2-after-win-wins">0/0</span></p>
-    <p>Points: <span id="set2-after-win-points">0/0</span></p>
-    <p>Service Points: <span id="set2-after-win-service-points">0/0</span></p>
-    <p>Return Points: <span id="set2-after-win-return-points">0/0</span></p>
-    <p>Games: <span id="set2-after-win-games">0/0</span></p>
-    <p>Service Games: <span id="set2-after-win-service-games">0/0</span></p>
-    <p>Return Games: <span id="set2-after-win-return-games">0/0</span></p>
-    <p>Break Points Saved: <span id="set2-after-win-break-points-saved">0 su 0</span></p>
-    <p>Break Points Converted: <span id="set2-after-win-break-points-converted">0 su 0</span></p>
-    <p>Tiebreak Win: <span id="set2-after-win-tiebreak-wins">0/0</span></p>
-    <p>First to Lead: <span id="set2-after-win-first-to-lead">0/0</span></p>
-    <p>First to Loss: <span id="set2-after-win-first-to-loss">0/0</span></p>
-</div>
-<div id="aggregated-set2-after-loss-stats">
-    <h4>Total Stats Set 2 - Set 1 Loss</h4>
-    <p>Set Win: <span id="set2-after-loss-wins">0/0</span></p>
-    <p>Points: <span id="set2-after-loss-points">0/0</span></p>
-    <p>Service Points: <span id="set2-after-loss-service-points">0/0</span></p>
-    <p>Return Points: <span id="set2-after-loss-return-points">0/0</span></p>
-    <p>Games: <span id="set2-after-loss-games">0/0</span></p>
-    <p>Service Games: <span id="set2-after-loss-service-games">0/0</span></p>
-    <p>Return Games: <span id="set2-after-loss-return-games">0/0</span></p>
-    <p>Break Points Saved: <span id="set2-after-loss-break-points-saved">0 su 0</span></p>
-    <p>Break Points Converted: <span id="set2-after-loss-break-points-converted">0 su 0</span></p>
-    <p>Tiebreak Win: <span id="set2-after-loss-tiebreak-wins">0/0</span></p>
-    <p>First to Lead: <span id="set2-after-loss-first-to-lead">0/0</span></p>
-    <p>First to Loss: <span id="set2-after-loss-first-to-loss">0/0</span></p>
-</div>
-
-<!-- Aggiungi questi campi per Set 3 -->
-<div id="aggregated-set3-stats">
-    <h4>Total Stats Set 3</h4>
-    <p>Set Win: <span id="set3-wins">0/0</span></p>
-    <p>Points: <span id="set3-points">0/0</span></p>
-    <p>Service Points: <span id="set3-service-points">0/0</span></p>
-    <p>Return Points: <span id="set3-return-points">0/0</span></p>
-    <p>Games: <span id="set3-games">0/0</span></p>
-    <p>Service Games: <span id="set3-service-games">0/0</span></p>
-    <p>Return Games: <span id="set3-return-games">0/0</span></p>
-    <p>Break Points Saved: <span id="set3-break-points-saved">0 su 0</span></p>
-    <p>Break Points Converted: <span id="set3-break-points-converted">0 su 0</span></p>
-    <p>Tiebreak Win: <span id="set3-tiebreak-wins">0/0</span></p>
-    <p>First to Lead: <span id="set3-first-to-lead">0/0</span></p>
-    <p>First to Loss: <span id="set3-first-to-loss">0/0</span></p>
-</div>
-<div id="aggregated-set3-after-win-stats">
-    <h4>Total Stats Set 3 - Set 2 Win</h4>
-    <p>Set Win: <span id="set3-after-win-wins">0/0</span></p>
-    <p>Points: <span id="set3-after-win-points">0/0</span></p>
-    <p>Service Points: <span id="set3-after-win-service-points">0/0</span></p>
-    <p>Return Points: <span id="set3-after-win-return-points">0/0</span></p>
-    <p>Games: <span id="set3-after-win-games">0/0</span></p>
-    <p>Service Games: <span id="set3-after-win-service-games">0/0</span></p>
-    <p>Return Games: <span id="set3-after-win-return-games">0/0</span></p>
-    <p>Break Points Saved: <span id="set3-after-win-break-points-saved">0 su 0</span></p>
-    <p>Break Points Converted: <span id="set3-after-win-break-points-converted">0 su 0</span></p>
-    <p>Tiebreak Win: <span id="set3-after-win-tiebreak-wins">0/0</span></p>
-    <p>First to Lead: <span id="set3-after-win-first-to-lead">0/0</span></p>
-    <p>First to Loss: <span id="set3-after-win-first-to-loss">0/0</span></p>
-</div>
-<div id="aggregated-set3-after-loss-stats">
-    <h4>Total Stats Set 3 - Set 2 Loss</h4>
-    <p>Set Win: <span id="set3-after-loss-wins">0/0</span></p>
-    <p>Points: <span id="set3-after-loss-points">0/0</span></p>
-    <p>Service Points: <span id="set3-after-loss-service-points">0/0</span></p>
-    <p>Return Points: <span id="set3-after-loss-return-points">0/0</span></p>
-    <p>Games: <span id="set3-after-loss-games">0/0</span></p>
-    <p>Service Games: <span id="set3-after-loss-service-games">0/0</span></p>
-    <p>Return Games: <span id="set3-after-loss-return-games">0/0</span></p>
-    <p>Break Points Saved: <span id="set3-after-loss-break-points-saved">0 su 0</span></p>
-    <p>Break Points Converted: <span id="set3-after-loss-break-points-converted">0 su 0</span></p>
-    <p>Tiebreak Win: <span id="set3-after-loss-tiebreak-wins">0/0</span></p>
-    <p>First to Lead: <span id="set3-after-loss-first-to-lead">0/0</span></p>
-    <p>First to Loss: <span id="set3-after-loss-first-to-loss">0/0</span></p>
-</div>
-  
+    
+    <div id="aggregated-set1-stats">
+        <h4>Total Stats Set 1</h4>
+        <p>Set Win: <span id="set1-wins">0/0</span></p>
+        <p>Points: <span id="set1-points">0/0</span></p>
+        <p>Service Points: <span id="set1-service-points">0/0</span></p>
+        <p>Return Points: <span id="set1-return-points">0/0</span></p>
+        <p>Games: <span id="set1-games">0/0</span></p>
+        <p>Service Games: <span id="set1-service-games">0/0</span></p>
+        <p>Return Games: <span id="set1-return-games">0/0</span></p>
+        <p>Break Points Saved: <span id="set1-break-points-saved">0 su 0</span></p>
+        <p>Break Points Converted: <span id="set1-break-points-converted">0 su 0</span></p>
+        <p>Tiebreak Win: <span id="set1-tiebreak-wins">0/0</span></p>
+        <p>First to Lead: <span id="set1-first-to-lead">0/0 (early: 0, late: 0)</span></p>
+        <p>First to Loss: <span id="set1-first-to-loss">0/0 (early: 0, late: 0)</span></p>
+        <p>Counter Break Win: <span id="set1-counterbreak-win">0/0</span></p>
+        <p>Counter Break Loss: <span id="set1-counterbreak-loss">0/0</span></p>
+    </div>
+    <div id="aggregated-set2-stats">
+        <h4>Total Stats Set 2</h4>
+        <p>Set Win: <span id="set2-wins">0/0</span></p>
+        <p>Points: <span id="set2-points">0/0</span></p>
+        <p>Service Points: <span id="set2-service-points">0/0</span></p>
+        <p>Return Points: <span id="set2-return-points">0/0</span></p>
+        <p>Games: <span id="set2-games">0/0</span></p>
+        <p>Service Games: <span id="set2-service-games">0/0</span></p>
+        <p>Return Games: <span id="set2-return-games">0/0</span></p>
+        <p>Break Points Saved: <span id="set2-break-points-saved">0 su 0</span></p>
+        <p>Break Points Converted: <span id="set2-break-points-converted">0 su 0</span></p>
+        <p>Tiebreak Win: <span id="set2-tiebreak-wins">0/0</span></p>
+        <p>First to Lead: <span id="set2-first-to-lead">0/0 (early: 0, late: 0)</span></p>
+        <p>First to Loss: <span id="set2-first-to-loss">0/0 (early: 0, late: 0)</span></p>
+        <p>Counter Break Win: <span id="set2-counterbreak-win">0/0</span></p>
+        <p>Counter Break Loss: <span id="set2-counterbreak-loss">0/0</span></p>
+    </div>
+    <div id="aggregated-set2-after-win-stats">
+        <h4>Total Stats Set 2 - Set 1 Win</h4>
+        <p>Set Win: <span id="set2-after-win-wins">0/0</span></p>
+        <p>Points: <span id="set2-after-win-points">0/0</span></p>
+        <p>Service Points: <span id="set2-after-win-service-points">0/0</span></p>
+        <p>Return Points: <span id="set2-after-win-return-points">0/0</span></p>
+        <p>Games: <span id="set2-after-win-games">0/0</span></p>
+        <p>Service Games: <span id="set2-after-win-service-games">0/0</span></p>
+        <p>Return Games: <span id="set2-after-win-return-games">0/0</span></p>
+        <p>Break Points Saved: <span id="set2-after-win-break-points-saved">0 su 0</span></p>
+        <p>Break Points Converted: <span id="set2-after-win-break-points-converted">0 su 0</span></p>
+        <p>Tiebreak Win: <span id="set2-after-win-tiebreak-wins">0/0</span></p>
+        <p>First to Lead: <span id="set2-after-win-first-to-lead">0/0 (early: 0, late: 0)</span></p>
+        <p>First to Loss: <span id="set2-after-win-first-to-loss">0/0 (early: 0, late: 0)</span></p>
+        <p>Counter Break Win: <span id="set2-after-win-counterbreak-win">0/0</span></p>
+        <p>Counter Break Loss: <span id="set2-after-win-counterbreak-loss">0/0</span></p>
+    </div>
+    <div id="aggregated-set2-after-loss-stats">
+        <h4>Total Stats Set 2 - Set 1 Loss</h4>
+        <p>Set Win: <span id="set2-after-loss-wins">0/0</span></p>
+        <p>Points: <span id="set2-after-loss-points">0/0</span></p>
+        <p>Service Points: <span id="set2-after-loss-service-points">0/0</span></p>
+        <p>Return Points: <span id="set2-after-loss-return-points">0/0</span></p>
+        <p>Games: <span id="set2-after-loss-games">0/0</span></p>
+        <p>Service Games: <span id="set2-after-loss-service-games">0/0</span></p>
+        <p>Return Games: <span id="set2-after-loss-return-games">0/0</span></p>
+        <p>Break Points Saved: <span id="set2-after-loss-break-points-saved">0 su 0</span></p>
+        <p>Break Points Converted: <span id="set2-after-loss-break-points-converted">0 su 0</span></p>
+        <p>Tiebreak Win: <span id="set2-after-loss-tiebreak-wins">0/0</span></p>
+        <p>First to Lead: <span id="set2-after-loss-first-to-lead">0/0 (early: 0, late: 0)</span></p>
+        <p>First to Loss: <span id="set2-after-loss-first-to-loss">0/0 (early: 0, late: 0)</span></p>
+        <p>Counter Break Win: <span id="set2-after-loss-counterbreak-win">0/0</span></p>
+        <p>Counter Break Loss: <span id="set2-after-loss-counterbreak-loss">0/0</span></p>
+    </div>
+    <div id="aggregated-set3-stats">
+        <h4>Total Stats Set 3</h4>
+        <p>Set Win: <span id="set3-wins">0/0</span></p>
+        <p>Points: <span id="set3-points">0/0</span></p>
+        <p>Service Points: <span id="set3-service-points">0/0</span></p>
+        <p>Return Points: <span id="set3-return-points">0/0</span></p>
+        <p>Games: <span id="set3-games">0/0</span></p>
+        <p>Service Games: <span id="set3-service-games">0/0</span></p>
+        <p>Return Games: <span id="set3-return-games">0/0</span></p>
+        <p>Break Points Saved: <span id="set3-break-points-saved">0 su 0</span></p>
+        <p>Break Points Converted: <span id="set3-break-points-converted">0 su 0</span></p>
+        <p>Tiebreak Win: <span id="set3-tiebreak-wins">0/0</span></p>
+        <p>First to Lead: <span id="set3-first-to-lead">0/0 (early: 0, late: 0)</span></p>
+        <p>First to Loss: <span id="set3-first-to-loss">0/0 (early: 0, late: 0)</span></p>
+        <p>Counter Break Win: <span id="set3-counterbreak-win">0/0</span></p>
+        <p>Counter Break Loss: <span id="set3-counterbreak-loss">0/0</span></p>
+    </div>
+    <div id="aggregated-set3-after-win-stats">
+        <h4>Total Stats Set 3 - Set 2 Win</h4>
+        <p>Set Win: <span id="set3-after-win-wins">0/0</span></p>
+        <p>Points: <span id="set3-after-win-points">0/0</span></p>
+        <p>Service Points: <span id="set3-after-win-service-points">0/0</span></p>
+        <p>Return Points: <span id="set3-after-win-return-points">0/0</span></p>
+        <p>Games: <span id="set3-after-win-games">0/0</span></p>
+        <p>Service Games: <span id="set3-after-win-service-games">0/0</span></p>
+        <p>Return Games: <span id="set3-after-win-return-games">0/0</span></p>
+        <p>Break Points Saved: <span id="set3-after-win-break-points-saved">0 su 0</span></p>
+        <p>Break Points Converted: <span id="set3-after-win-break-points-converted">0 su 0</span></p>
+        <p>Tiebreak Win: <span id="set3-after-win-tiebreak-wins">0/0</span></p>
+        <p>First to Lead: <span id="set3-after-win-first-to-lead">0/0 (early: 0, late: 0)</span></p>
+        <p>First to Loss: <span id="set3-after-win-first-to-loss">0/0 (early: 0, late: 0)</span></p>
+        <p>Counter Break Win: <span id="set3-after-win-counterbreak-win">0/0</span></p>
+        <p>Counter Break Loss: <span id="set3-after-win-counterbreak-loss">0/0</span></p>
+    </div>
+    <div id="aggregated-set3-after-loss-stats">
+        <h4>Total Stats Set 3 - Set 2 Loss</h4>
+        <p>Set Win: <span id="set3-after-loss-wins">0/0</span></p>
+        <p>Points: <span id="set3-after-loss-points">0/0</span></p>
+        <p>Service Points: <span id="set3-after-loss-service-points">0/0</span></p>
+        <p>Return Points: <span id="set3-after-loss-return-points">0/0</span></p>
+        <p>Games: <span id="set3-after-loss-games">0/0</span></p>
+        <p>Service Games: <span id="set3-after-loss-service-games">0/0</span></p>
+        <p>Return Games: <span id="set3-after-loss-return-games">0/0</span></p>
+        <p>Break Points Saved: <span id="set3-after-loss-break-points-saved">0 su 0</span></p>
+        <p>Break Points Converted: <span id="set3-after-loss-break-points-converted">0 su 0</span></p>
+        <p>Tiebreak Win: <span id="set3-after-loss-tiebreak-wins">0/0</span></p>
+        <p>First to Lead: <span id="set3-after-loss-first-to-lead">0/0 (early: 0, late: 0)</span></p>
+        <p>First to Loss: <span id="set3-after-loss-first-to-loss">0/0 (early: 0, late: 0)</span></p>
+        <p>Counter Break Win: <span id="set3-after-loss-counterbreak-win">0/0</span></p>
+        <p>Counter Break Loss: <span id="set3-after-loss-counterbreak-loss">0/0</span></p>
+    </div>
+    <div id="aggregated-set4-stats">
+        <h4>Total Stats Set 4</h4>
+        <p>Set Win: <span id="set4-wins">0/0</span></p>
+        <p>Points: <span id="set4-points">0/0</span></p>
+        <p>Service Points: <span id="set4-service-points">0/0</span></p>
+        <p>Return Points: <span id="set4-return-points">0/0</span></p>
+        <p>Games: <span id="set4-games">0/0</span></p>
+        <p>Service Games: <span id="set4-service-games">0/0</span></p>
+        <p>Return Games: <span id="set4-return-games">0/0</span></p>
+        <p>Break Points Saved: <span id="set4-break-points-saved">0 su 0</span></p>
+        <p>Break Points Converted: <span id="set4-break-points-converted">0 su 0</span></p>
+        <p>Tiebreak Win: <span id="set4-tiebreak-wins">0/0</span></p>
+        <p>First to Lead: <span id="set4-first-to-lead">0/0 (early: 0, late: 0)</span></p>
+        <p>First to Loss: <span id="set4-first-to-loss">0/0 (early: 0, late: 0)</span></p>
+        <p>Counter Break Win: <span id="set4-counterbreak-win">0/0</span></p>
+        <p>Counter Break Loss: <span id="set4-counterbreak-loss">0/0</span></p>
+    </div>
+    <div id="aggregated-set5-stats">
+        <h4>Total Stats Set 5</h4>
+        <p>Set Win: <span id="set5-wins">0/0</span></p>
+        <p>Points: <span id="set5-points">0/0</span></p>
+        <p>Service Points: <span id="set5-service-points">0/0</span></p>
+        <p>Return Points: <span id="set5-return-points">0/0</span></p>
+        <p>Games: <span id="set5-games">0/0</span></p>
+        <p>Service Games: <span id="set5-service-games">0/0</span></p>
+        <p>Return Games: <span id="set5-return-games">0/0</span></p>
+        <p>Break Points Saved: <span id="set5-break-points-saved">0 su 0</span></p>
+        <p>Break Points Converted: <span id="set5-break-points-converted">0 su 0</span></p>
+        <p>Tiebreak Win: <span id="set5-tiebreak-wins">0/0</span></p>
+        <p>First to Lead: <span id="set5-first-to-lead">0/0 (early: 0, late: 0)</span></p>
+        <p>First to Loss: <span id="set5-first-to-loss">0/0 (early: 0, late: 0)</span></p>
+        <p>Counter Break Win: <span id="set5-counterbreak-win">0/0</span></p>
+        <p>Counter Break Loss: <span id="set5-counterbreak-loss">0/0</span></p>
+    </div>
+    
 </body>
 </html>

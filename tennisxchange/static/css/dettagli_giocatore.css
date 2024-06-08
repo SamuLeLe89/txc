@@ -2,83 +2,92 @@
     background-color: rgba(1, 44, 70, 0.681);
     color: rgba(255, 255, 255, 0.776);
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    border: 1px solid #ccc;
+    border: 0.15em solid #ccc;
     display: inline-block;
     flex: 0 0 auto;
-    margin: 5px;
-    padding: 8px;
-    width: 20%;
+    margin: 0.2em;
+    padding: 0.4em;
+    width: 11%;
     vertical-align: top;
     text-align: center; 
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .cards-container {
     display: flex;
     overflow-x: auto; /* Abilita lo scorrimento orizzontale */
     white-space: nowrap; /* Evita che gli elementi vadano a capo */
-    padding: 10px;
 }
 
 .header {
-    padding: 5px;
-    font-size: 22px;
+    padding: 0.2em;
+    font-size: 0.68em;
 }
 
 .set-scores {
-    font-size: 0.75em;
+    font-size: 0.65em;
     color: white;
-    margin-left: 10px;
+    margin-left: 1em;
     font-style: oblique;
 }
 
 .body {
-    padding: 10px;
-    font-size: 14px;
+    padding: 0.22em;
+    font-size: 0.49em;
+}
+
+.data {
+    font-size: 0.2em;
+    font-weight: bold;
+}
+
+.torneo {
+    font-size: 1.3em;
+}
+
+.turno {
+    font-size: 0.3em;
 }
 
 .versus {
     font-size: 1.4em;
+    font-style: oblique;
 }
 
 .surface {
     background-color: #33393c;
-    padding: 5px;
-    font-size: 18px;
+    padding: 0.23em;
+    font-size: 1em;
+    margin-left: 0.46em;
+    margin-right: 0.46em;
 }
 
 .footer {
     background-color: #f2f2f2;
-    padding: 5px;
-    font-size: 14px;
-    width: 50%;
+    padding: 0.33em;
+    font-size: 0.33em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 .set {
     margin-top: 10px;
-    margin-left: 40px;
-    margin-right: 40px;
-    padding: 15px;
-    background-color: #9b462fad;
-    color: white;
+    padding: 0.3em;
     font-weight: bold;
-    border-radius: 14px;
+    font-size: 0.65em;
+    border-radius: 0.85em;
 }
 
 /* Modifica le regole per il layout dei giochi */
 .game {
     display: flex;
-    justify-content: space-between;
-    height: 0.5em;
-    align-content: center;
     align-items: center;
-    margin-left: 1.8em;
-    margin-right: 1.8em;
-    margin-top: 5px;
+    margin-top: 0.25em;
     background-color: #444;
     color: #ddd;
-    padding: 5px;
-    border-radius: 4px;
+    padding: 0.2em;
+    padding-left: 0.44em;
+    border-radius: 0.36em;
+    font-size: 0.5em;
 }
 
 .game-score {
@@ -87,14 +96,11 @@
     font-size: larger;
     flex-grow: 1;
     text-align: left; 
-    margin: 0.3em;
 }
 
 .serve-receive {
-    font-size: smaller;
-    font-weight: bold;
     text-align: right; 
-    margin-left: 10px;
+    margin-left: 0.1em;
 }
 
 .break-point-container {
@@ -103,8 +109,8 @@
 
 .break-point {
     display: inline-block;
-    width: 8px; /* Puoi regolare la dimensione secondo le tue esigenze */
-    height: 8px;
+    width: 0.5em; 
+    height: 0.5em;
     border-radius: 50%;
     margin-left: 3px;
 }
@@ -119,8 +125,8 @@
 
 .break-win {
     display: inline-block;
-    width: 15px;
-    height: 15px;
+    width: 1.1em;
+    height: 1.1em;
     background-color: rgb(30, 194, 30);
     border-radius: 50%;
     margin-left: 5px;
@@ -128,8 +134,8 @@
 
 .break-loss {
     display: inline-block;
-    width: 15px;
-    height: 15px;
+    width: 1.1em;
+    height: 1.1em;
     background-color: rgb(189, 32, 32);
     border-radius: 50%;
     margin-left: 5px;
@@ -139,12 +145,12 @@
 /* Nascondi i punti del tiebreak */
 .tiebreak {
     background-color: rgb(205, 200, 50);
-    margin-top: 5px;
-    margin-left: 20%;
-    margin-right: 20%;
     color: #ffffff;
-    padding: 5px;
-    border-radius: 14px;
+    padding: 0.3em;
+    font-weight: bold;
+    font-size: 0.65em;
+    border-radius: 0.85em;
+    margin-top: 0.33em;
 }
 
 /* Nascondi i punti del tiebreak */
@@ -153,29 +159,26 @@
 }
 
 
-/* Mantieni le regole esistenti */
 .stats-container {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Due colonne di uguale larghezza */
-    gap: 5px; /* Aggiunge spazio tra le colonne */
-    text-align: left; /* Allinea il testo a sinistra per leggibilità */
-    margin: 10px auto;
-    padding: 15px;
-    width: 68%;
+    grid-template-columns: 1fr 1fr; 
+    gap: 0.15em; 
+    text-align: left; 
+    padding: 0.1em;
     background-color: #33393cb4;
     color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 0.22em;
 }
 
 .stat-name, .player-stat-value {
-    padding: 5px; /* Riduci il padding per una migliore disposizione in griglia */
-    border: 2px solid white;
-    border-radius: 5px;
+    padding: 0.22em; 
+    border: 0.1em solid white;
+    border-radius: 0.29em;
+    font-size: 0.5em;
 }
 
 .player-stat-value {
-    background-color: #4C4C4C; /* Distingue i valori con un colore di sfondo differente */
+    background-color: #4C4C4C; 
 }
 
 .match-result-win .header {
@@ -196,4 +199,12 @@
 .set-result-loss {
     background-color: lightcoral;
     color: black; /* Per rendere il testo leggibile su sfondo rosso chiaro */
+}
+
+.manual-stats-container {
+    display: none;
+}
+
+.stato {
+    display: none;
 }

@@ -15,7 +15,7 @@ function generateMatchDetailsHtml(data, matchId) {
             prevSetResult = window.calculateSetWinnerFromHTML(matchId, prevSet.set_number);
         }
 
-        detailsHtml += `<div class='set set-result-${setWinner.toLowerCase()}'><strong class="set-winner ${setWinner}">Set ${set.set_number}: ${setWinner} (Prev Set: ${prevSetResult})</strong></div>`;
+        detailsHtml += `<div class='set set-result-${setWinner.toLowerCase()}'><strong class="set-winner ${setWinner}">Set ${set.set_number}: ${setWinner} </strong></div>`;
 
         set.games.forEach((game, gameIndex) => {
             let breakInfo = '';

@@ -3,6 +3,38 @@ function calculateAndDisplayAggregatedStatistics() {
     let matchesWon = 0;
     let matchesLost = 0;
 
+    let totalSetsPlayed = 0;
+    let totalSetsWon = 0;
+    let totalTiebreaksPlayed = 0;
+    let totalTiebreaksWon = 0;
+
+    let totalPointsWon = 0;
+    let totalPoints = 0;
+    let totalServicePointsWon = 0;
+    let totalServicePoints = 0;
+    let totalReturnPointsWon = 0;
+    let totalReturnPoints = 0;
+    let totalGamesWon = 0;
+    let totalGames = 0;
+    let totalServiceGamesWon = 0;
+    let totalServiceGames = 0;
+    let totalReturnGamesWon = 0;
+    let totalReturnGames = 0;
+    let totalBreakPointsSaved = 0;
+    let totalBreakPointsAgainst = 0;
+    let totalBreakPointsConverted = 0;
+    let totalBreakPointsFor = 0;
+
+    let firstToLead = 0;
+    let firstToLoss = 0;
+    let firstToLeadEarly = 0;
+    let firstToLeadLate = 0;
+    let firstToLossEarly = 0;
+    let firstToLossLate = 0;
+
+    let counterBreakWins = 0;
+    let counterBreakLosses = 0;
+
     matches.forEach(match => {
         const matchId = match.dataset.matchId;
         const matchWinnerElement = match.querySelector('.match-winner strong');
@@ -17,14 +49,143 @@ function calculateAndDisplayAggregatedStatistics() {
         } else {
             console.error(`Elemento match-winner non trovato per il match ${matchId}`);
         }
+
+        for (let setNumber = 1; setNumber <= 5; setNumber++) {
+            const setStats = match.querySelector(`#set-stats-${matchId}-${setNumber}`);
+
+            if (setStats) {
+                const setResultText = setStats.querySelector('h3').textContent.split(': ')[1];
+
+                if (setResultText.includes('Win')) {
+                    totalSetsWon++;
+                }
+                totalSetsPlayed++;
+
+                const tiebreakResultElement = Array.from(setStats.querySelectorAll('p')).find(p => p.textContent.includes('Tiebreak Result'));
+                if (tiebreakResultElement) {
+                    const tiebreakResultText = tiebreakResultElement.textContent.split(': ')[1];
+                    if (tiebreakResultText.includes('Win')) {
+                        totalTiebreaksWon++;
+                    }
+                    totalTiebreaksPlayed++;
+                }
+
+                try {
+                    const pointsText = setStats.querySelector('p:nth-child(2)').textContent.split(':')[1].trim().split(' ')[0];
+                    const servicePointsText = setStats.querySelector('p:nth-child(3)').textContent.split(':')[1].trim().split(' ')[0];
+                    const returnPointsText = setStats.querySelector('p:nth-child(4)').textContent.split(':')[1].trim().split(' ')[0];
+                    const gamesText = setStats.querySelector('p:nth-child(5)').textContent.split(':')[1].trim().split(' ')[0];
+                    const serviceGamesText = setStats.querySelector('p:nth-child(6)').textContent.split(':')[1].trim().split(' ')[0];
+                    const returnGamesText = setStats.querySelector('p:nth-child(7)').textContent.split(':')[1].trim().split(' ')[0];
+                    const breakPointsSavedText = setStats.querySelector('p:nth-child(8)').textContent.split(':')[1].trim().split(' su ');
+                    const breakPointsConvertedText = setStats.querySelector('p:nth-child(9)').textContent.split(':')[1].trim().split(' su ');
+
+                    const points = pointsText.split('/');
+                    const servicePoints = servicePointsText.split('/');
+                    const returnPoints = returnPointsText.split('/');
+                    const games = gamesText.split('/');
+                    const serviceGames = serviceGamesText.split('/');
+                    const returnGames = returnGamesText.split('/');
+                    const breakPointsSaved = breakPointsSavedText[0];
+                    const breakPointsAgainst = breakPointsSavedText[1];
+                    const breakPointsConverted = breakPointsConvertedText[0];
+                    const breakPointsFor = breakPointsConvertedText[1];
+
+                    totalPointsWon += parseInt(points[0]);
+                    totalPoints += parseInt(points[1]);
+                    totalServicePointsWon += parseInt(servicePoints[0]);
+                    totalServicePoints += parseInt(servicePoints[1]);
+                    totalReturnPointsWon += parseInt(returnPoints[0]);
+                    totalReturnPoints += parseInt(returnPoints[1]);
+                    totalGamesWon += parseInt(games[0]);
+                    totalGames += parseInt(games[1]);
+                    totalServiceGamesWon += parseInt(serviceGames[0]);
+                    totalServiceGames += parseInt(serviceGames[1]);
+                    totalReturnGamesWon += parseInt(returnGames[0]);
+                    totalReturnGames += parseInt(returnGames[1]);
+                    totalBreakPointsSaved += parseInt(breakPointsSaved);
+                    totalBreakPointsAgainst += parseInt(breakPointsAgainst);
+                    totalBreakPointsConverted += parseInt(breakPointsConverted);
+                    totalBreakPointsFor += parseInt(breakPointsFor);
+
+                    const firstBreakElement = Array.from(setStats.querySelectorAll('p')).find(p => p.textContent.includes('First Break'));
+                    const counterBreakElement = Array.from(setStats.querySelectorAll('p')).find(p => p.textContent.includes('Counter Break'));
+
+                    if (firstBreakElement) {
+                        const firstBreakText = firstBreakElement.textContent;
+                        if (firstBreakText.includes('First to lead')) {
+                            firstToLead++;
+                            if (firstBreakText.includes('early')) {
+                                firstToLeadEarly++;
+                            } else if (firstBreakText.includes('late')) {
+                                firstToLeadLate++;
+                            }
+                        } else if (firstBreakText.includes('First to loss')) {
+                            firstToLoss++;
+                            if (firstBreakText.includes('early')) {
+                                firstToLossEarly++;
+                            } else if (firstBreakText.includes('late')) {
+                                firstToLossLate++;
+                            }
+                        }
+
+                        if (counterBreakElement) {
+                            const counterBreakText = counterBreakElement.textContent;
+                            if (counterBreakText.includes('Controbreak win')) {
+                                counterBreakWins++;
+                            } else if (counterBreakText.includes('Controbreak loss')) {
+                                counterBreakLosses++;
+                            }
+                        } else {
+                            console.warn(`Elemento counterBreakElement non trovato per il match ${matchId}, set ${setNumber}`);
+                        }
+                    } else {
+                        console.warn(`Elemento firstBreakElement non trovato per il match ${matchId}, set ${setNumber}`);
+                    }
+
+                } catch (error) {
+                    console.error(`Errore nel parsing delle statistiche per il match ${match.dataset.matchId}`, error);
+                }
+            } else {
+                console.warn(`Elemento set-stats-${match.dataset.matchId}-${setNumber} non trovato.`);
+            }
+        }
     });
 
-    displayAggregatedStatistics(matchesWon, matchesLost);
+    displayAggregatedStatistics(
+        matchesWon, matchesLost, totalSetsPlayed, totalSetsWon, totalTiebreaksPlayed, totalTiebreaksWon, 
+        totalPointsWon, totalPoints, totalServicePointsWon, totalServicePoints, totalReturnPointsWon, totalReturnPoints, 
+        totalGamesWon, totalGames, totalServiceGamesWon, totalServiceGames, totalReturnGamesWon, totalReturnGames, 
+        totalBreakPointsSaved, totalBreakPointsAgainst, totalBreakPointsConverted, totalBreakPointsFor, 
+        firstToLead, firstToLoss, firstToLeadEarly, firstToLeadLate, firstToLossEarly, firstToLossLate, 
+        counterBreakWins, counterBreakLosses
+    );
 }
 
-function displayAggregatedStatistics(matchesWon, matchesLost) {
+function displayAggregatedStatistics(
+    matchesWon, matchesLost, totalSetsPlayed, totalSetsWon, totalTiebreaksPlayed, totalTiebreaksWon, 
+    totalPointsWon, totalPoints, totalServicePointsWon, totalServicePoints, totalReturnPointsWon, totalReturnPoints, 
+    totalGamesWon, totalGames, totalServiceGamesWon, totalServiceGames, totalReturnGamesWon, totalReturnGames, 
+    totalBreakPointsSaved, totalBreakPointsAgainst, totalBreakPointsConverted, totalBreakPointsFor, 
+    firstToLead, firstToLoss, firstToLeadEarly, firstToLeadLate, firstToLossEarly, firstToLossLate, 
+    counterBreakWins, counterBreakLosses
+) {
     setTextContentSafely('matches-won', `Match Vinti: ${matchesWon}`);
     setTextContentSafely('matches-lost', `Match Persi: ${matchesLost}`);
+    setTextContentSafely('total-sets-won', `Set Vinti: ${totalSetsWon}/${totalSetsPlayed}`);
+    setTextContentSafely('total-tiebreaks-won', `Tiebreak Vinti: ${totalTiebreaksWon}/${totalTiebreaksPlayed}`);
+    setTextContentSafely('total-points', `Points: ${totalPointsWon}/${totalPoints}`);
+    setTextContentSafely('total-service-points', `Service Points: ${totalServicePointsWon}/${totalServicePoints}`);
+    setTextContentSafely('total-return-points', `Return Points: ${totalReturnPointsWon}/${totalReturnPoints}`);
+    setTextContentSafely('total-games', `Games: ${totalGamesWon}/${totalGames}`);
+    setTextContentSafely('total-service-games', `Service Games: ${totalServiceGamesWon}/${totalServiceGames}`);
+    setTextContentSafely('total-return-games', `Return Games: ${totalReturnGamesWon}/${totalReturnGames}`);
+    setTextContentSafely('total-break-points-saved', `Break Points Saved: ${totalBreakPointsSaved} su ${totalBreakPointsAgainst}`);
+    setTextContentSafely('total-break-points-converted', `Break Points Converted: ${totalBreakPointsConverted} su ${totalBreakPointsFor}`);
+    setTextContentSafely('total-first-to-lead', `First to Lead: ${firstToLead}/${totalSetsPlayed} (early: ${firstToLeadEarly}, late: ${firstToLeadLate})`);
+    setTextContentSafely('total-first-to-loss', `First to Loss: ${firstToLoss}/${totalSetsPlayed} (early: ${firstToLossEarly}, late: ${firstToLossLate})`);
+    setTextContentSafely('total-counterbreak-win', `Counter Break Win: ${counterBreakWins}/${firstToLoss}`);
+    setTextContentSafely('total-counterbreak-loss', `Counter Break Loss: ${counterBreakLosses}/${firstToLead}`);
 }
 
 function setTextContentSafely(elementId, textContent) {
@@ -35,6 +196,13 @@ function setTextContentSafely(elementId, textContent) {
         console.warn(`Elemento con ID ${elementId} non trovato.`);
     }
 }
+
+// Aggiunta dei listener agli eventi di caricamento della pagina per calcolare e visualizzare le statistiche
+document.addEventListener('DOMContentLoaded', () => {
+    calculateAndDisplayAggregatedStatistics();
+});
+
+
 
 function calculateAndDisplaySetStatistics(setNumber) {
     const matches = document.querySelectorAll('.card');
@@ -106,10 +274,32 @@ function calculateAndDisplaySetStatistics(setNumber) {
 
     let firstToLead = 0;
     let firstToLoss = 0;
+    let firstToLeadEarly = 0;
+    let firstToLeadLate = 0;
+    let firstToLossEarly = 0;
+    let firstToLossLate = 0;
+
     let firstToLeadAfterWin = 0;
     let firstToLossAfterWin = 0;
+    let firstToLeadEarlyAfterWin = 0;
+    let firstToLeadLateAfterWin = 0;
+    let firstToLossEarlyAfterWin = 0;
+    let firstToLossLateAfterWin = 0;
+
     let firstToLeadAfterLoss = 0;
     let firstToLossAfterLoss = 0;
+    let firstToLeadEarlyAfterLoss = 0;
+    let firstToLeadLateAfterLoss = 0;
+    let firstToLossEarlyAfterLoss = 0;
+    let firstToLossLateAfterLoss = 0;
+
+    let counterBreakWins = 0;
+    let counterBreakLosses = 0;
+
+    let counterBreakWinsAfterWin = 0;
+    let counterBreakLossesAfterWin = 0;
+    let counterBreakWinsAfterLoss = 0;
+    let counterBreakLossesAfterLoss = 0;
 
     matches.forEach(match => {
         const setStats = match.querySelector(`#set-stats-${match.dataset.matchId}-${setNumber}`);
@@ -117,8 +307,6 @@ function calculateAndDisplaySetStatistics(setNumber) {
         if (setStats) {
             const setResultText = setStats.querySelector('h3').textContent.split(': ')[1];
             const prevSetResultText = setStats.querySelector('h3').textContent.split(' (Prev Set: ')[1].split(')')[0];
-
-            console.log(`Match ID: ${match.dataset.matchId}, Set ${setNumber} Result: ${setResultText}, Previous Set Result: ${prevSetResultText}`);
 
             if (setResultText.includes('Win')) {
                 totalSetWon++;
@@ -138,7 +326,6 @@ function calculateAndDisplaySetStatistics(setNumber) {
             const tiebreakResultElement = Array.from(setStats.querySelectorAll('p')).find(p => p.textContent.includes('Tiebreak Result'));
             if (tiebreakResultElement) {
                 const tiebreakResultText = tiebreakResultElement.textContent.split(': ')[1];
-                console.log(`Tiebreak Result: ${tiebreakResultText}`);
                 if (tiebreakResultText.includes('Win')) {
                     totalTiebreakWon++;
                     if (prevSetResultText === 'Win') {
@@ -175,8 +362,6 @@ function calculateAndDisplaySetStatistics(setNumber) {
                 const breakPointsAgainst = breakPointsSavedText[1];
                 const breakPointsConverted = breakPointsConvertedText[0];
                 const breakPointsFor = breakPointsConvertedText[1];
-
-                console.log(`Points: ${points}, Service Points: ${servicePoints}, Return Points: ${returnPoints}, Games: ${games}`);
 
                 totalPointsWon += parseInt(points[0]);
                 totalPoints += parseInt(points[1]);
@@ -233,33 +418,74 @@ function calculateAndDisplaySetStatistics(setNumber) {
 
                 const firstBreakElement = Array.from(setStats.querySelectorAll('p')).find(p => p.textContent.includes('First Break'));
                 const counterBreakElement = Array.from(setStats.querySelectorAll('p')).find(p => p.textContent.includes('Counter Break'));
+
+                console.log(`Match ID: ${match.dataset.matchId}, Set Number: ${setNumber}`);
+                console.log(`First Break Element: ${firstBreakElement ? firstBreakElement.textContent : 'Non trovato'}`);
+                console.log(`Counter Break Element: ${counterBreakElement ? counterBreakElement.textContent : 'Non trovato'}`);
+
                 if (firstBreakElement) {
                     const firstBreakText = firstBreakElement.textContent;
-                    console.log(`First Break Element Found: ${firstBreakText}`);
                     if (firstBreakText.includes('First to lead')) {
                         firstToLead++;
+                        if (firstBreakText.includes('early')) {
+                            firstToLeadEarly++;
+                            if (prevSetResultText === 'Win') {
+                                firstToLeadEarlyAfterWin++;
+                            } else if (prevSetResultText === 'Loss') {
+                                firstToLeadEarlyAfterLoss++;
+                            }
+                        } else if (firstBreakText.includes('late')) {
+                            firstToLeadLate++;
+                            if (prevSetResultText === 'Win') {
+                                firstToLeadLateAfterWin++;
+                            } else if (prevSetResultText === 'Loss') {
+                                firstToLeadLateAfterLoss++;
+                            }
+                        }
                         if (prevSetResultText === 'Win') {
                             firstToLeadAfterWin++;
                         } else if (prevSetResultText === 'Loss') {
                             firstToLeadAfterLoss++;
                         }
+                        if (counterBreakElement && counterBreakElement.textContent.includes('Controbreak loss')) {
+                            counterBreakLosses++;
+                            if (prevSetResultText === 'Win') {
+                                counterBreakLossesAfterWin++;
+                            } else if (prevSetResultText === 'Loss') {
+                                counterBreakLossesAfterLoss++;
+                            }
+                        }
                     } else if (firstBreakText.includes('First to loss')) {
                         firstToLoss++;
+                        if (firstBreakText.includes('early')) {
+                            firstToLossEarly++;
+                            if (prevSetResultText === 'Win') {
+                                firstToLossEarlyAfterWin++;
+                            } else if (prevSetResultText === 'Loss') {
+                                firstToLossEarlyAfterLoss++;
+                            }
+                        } else if (firstBreakText.includes('late')) {
+                            firstToLossLate++;
+                            if (prevSetResultText === 'Win') {
+                                firstToLossLateAfterWin++;
+                            } else if (prevSetResultText === 'Loss') {
+                                firstToLossLateAfterLoss++;
+                            }
+                        }
                         if (prevSetResultText === 'Win') {
                             firstToLossAfterWin++;
                         } else if (prevSetResultText === 'Loss') {
                             firstToLossAfterLoss++;
                         }
+                        if (counterBreakElement && counterBreakElement.textContent.includes('Controbreak win')) {
+                            counterBreakWins++;
+                            if (prevSetResultText === 'Win') {
+                                counterBreakWinsAfterWin++;
+                            } else if (prevSetResultText === 'Loss') {
+                                counterBreakWinsAfterLoss++;
+                            }
+                        }
                     }
-                } else {
-                    console.log(`First Break Element Not Found for Match ID: ${match.dataset.matchId}, Set: ${setNumber}`);
-                }
-
-                if (counterBreakElement) {
-                    const counterBreakText = counterBreakElement.textContent;
-                    console.log(`Counter Break Element Found: ${counterBreakText}`);
-                } else {
-                    console.log(`Counter Break Element Not Found for Match ID: ${match.dataset.matchId}, Set: ${setNumber}`);
                 }
 
             } catch (error) {
@@ -269,10 +495,6 @@ function calculateAndDisplaySetStatistics(setNumber) {
             console.warn(`Elemento set-stats-${match.dataset.matchId}-${setNumber} non trovato.`);
         }
     });
-
-    console.log(`Set ${setNumber} - First to Lead: ${firstToLead}, First to Loss: ${firstToLoss}`);
-    console.log(`Set ${setNumber} After Win - First to Lead: ${firstToLeadAfterWin}, First to Loss: ${firstToLossAfterWin}`);
-    console.log(`Set ${setNumber} After Loss - First to Lead: ${firstToLeadAfterLoss}, First to Loss: ${firstToLossAfterLoss}`);
 
     setTextContentSafely(`set${setNumber}-wins`, `${totalSetWon}/${totalSetPlayed}`);
     setTextContentSafely(`set${setNumber}-tiebreak-wins`, `Tiebreak Win: ${totalTiebreakWon}/${totalTiebreakPlayed}`);
@@ -284,8 +506,10 @@ function calculateAndDisplaySetStatistics(setNumber) {
     setTextContentSafely(`set${setNumber}-return-games`, `${totalReturnGamesWon}/${totalReturnGames}`);
     setTextContentSafely(`set${setNumber}-break-points-saved`, `${totalBreakPointsSaved} su ${totalBreakPointsAgainst}`);
     setTextContentSafely(`set${setNumber}-break-points-converted`, `${totalBreakPointsConverted} su ${totalBreakPointsFor}`);
-    setTextContentSafely(`set${setNumber}-first-to-lead`, `First to lead: ${firstToLead}/${totalSetPlayed}`);
-    setTextContentSafely(`set${setNumber}-first-to-loss`, `First to loss: ${firstToLoss}/${totalSetPlayed}`);
+    setTextContentSafely(`set${setNumber}-first-to-lead`, `${firstToLead}/${totalSetPlayed} (early: ${firstToLeadEarly}, late: ${firstToLeadLate})`);
+    setTextContentSafely(`set${setNumber}-first-to-loss`, `${firstToLoss}/${totalSetPlayed} (early: ${firstToLossEarly}, late: ${firstToLossLate})`);
+    setTextContentSafely(`set${setNumber}-counterbreak-win`, `${counterBreakWins}/${firstToLoss}`);
+    setTextContentSafely(`set${setNumber}-counterbreak-loss`, `${counterBreakLosses}/${firstToLead}`);
 
     if (setNumber === 2 || setNumber === 3) {
         // Statistiche per set 2 e 3 dopo vittoria
@@ -299,8 +523,10 @@ function calculateAndDisplaySetStatistics(setNumber) {
         setTextContentSafely(`set${setNumber}-after-win-return-games`, `${totalReturnGamesAfterWinWon}/${totalReturnGamesAfterWin}`);
         setTextContentSafely(`set${setNumber}-after-win-break-points-saved`, `${totalBreakPointsAfterWinSaved} su ${totalBreakPointsAfterWinAgainst}`);
         setTextContentSafely(`set${setNumber}-after-win-break-points-converted`, `${totalBreakPointsAfterWinConverted} su ${totalBreakPointsAfterWinFor}`);
-        setTextContentSafely(`set${setNumber}-after-win-first-to-lead`, `First to lead: ${firstToLeadAfterWin}/${totalSetAfterWinPlayed}`);
-        setTextContentSafely(`set${setNumber}-after-win-first-to-loss`, `First to loss: ${firstToLossAfterWin}/${totalSetAfterWinPlayed}`);
+        setTextContentSafely(`set${setNumber}-after-win-first-to-lead`, `${firstToLeadAfterWin}/${totalSetAfterWinPlayed} (early: ${firstToLeadEarlyAfterWin}, late: ${firstToLeadLateAfterWin})`);
+        setTextContentSafely(`set${setNumber}-after-win-first-to-loss`, `${firstToLossAfterWin}/${totalSetAfterWinPlayed} (early: ${firstToLossEarlyAfterWin}, late: ${firstToLossLateAfterWin})`);
+        setTextContentSafely(`set${setNumber}-after-win-counterbreak-win`, `${counterBreakWinsAfterWin}/${firstToLossAfterWin}`);
+        setTextContentSafely(`set${setNumber}-after-win-counterbreak-loss`, `${counterBreakLossesAfterWin}/${firstToLeadAfterWin}`);
 
         // Statistiche per set 2 e 3 dopo sconfitta
         setTextContentSafely(`set${setNumber}-after-loss-wins`, `${totalSetAfterLossWon}/${totalSetAfterLossPlayed}`);
@@ -313,8 +539,10 @@ function calculateAndDisplaySetStatistics(setNumber) {
         setTextContentSafely(`set${setNumber}-after-loss-return-games`, `${totalReturnGamesAfterLossWon}/${totalReturnGamesAfterLoss}`);
         setTextContentSafely(`set${setNumber}-after-loss-break-points-saved`, `${totalBreakPointsAfterLossSaved} su ${totalBreakPointsAfterLossAgainst}`);
         setTextContentSafely(`set${setNumber}-after-loss-break-points-converted`, `${totalBreakPointsAfterLossConverted} su ${totalBreakPointsAfterLossFor}`);
-        setTextContentSafely(`set${setNumber}-after-loss-first-to-lead`, `First to lead: ${firstToLeadAfterLoss}/${totalSetAfterLossPlayed}`);
-        setTextContentSafely(`set${setNumber}-after-loss-first-to-loss`, `First to loss: ${firstToLossAfterLoss}/${totalSetAfterLossPlayed}`);
+        setTextContentSafely(`set${setNumber}-after-loss-first-to-lead`, `${firstToLeadAfterLoss}/${totalSetAfterLossPlayed} (early: ${firstToLeadEarlyAfterLoss}, late: ${firstToLeadLateAfterLoss})`);
+        setTextContentSafely(`set${setNumber}-after-loss-first-to-loss`, `${firstToLossAfterLoss}/${totalSetAfterLossPlayed} (early: ${firstToLossEarlyAfterLoss}, late: ${firstToLossLateAfterLoss})`);
+        setTextContentSafely(`set${setNumber}-after-loss-counterbreak-win`, `${counterBreakWinsAfterLoss}/${firstToLossAfterLoss}`);
+        setTextContentSafely(`set${setNumber}-after-loss-counterbreak-loss`, `${counterBreakLossesAfterLoss}/${firstToLeadAfterLoss}`);
     }
 }
 
@@ -322,10 +550,14 @@ function calculateAndDisplayAllSetStatistics() {
     calculateAndDisplaySetStatistics(1);
     calculateAndDisplaySetStatistics(2);
     calculateAndDisplaySetStatistics(3);
+    calculateAndDisplaySetStatistics(4);
+    calculateAndDisplaySetStatistics(5);
 }
 
 window.calculateAndDisplayAggregatedStatistics = calculateAndDisplayAggregatedStatistics;
 window.calculateAndDisplaySet1Statistics = calculateAndDisplaySetStatistics.bind(null, 1);
 window.calculateAndDisplaySet2Statistics = calculateAndDisplaySetStatistics.bind(null, 2);
 window.calculateAndDisplaySet3Statistics = calculateAndDisplaySetStatistics.bind(null, 3);
+window.calculateAndDisplaySet4Statistics = calculateAndDisplaySetStatistics.bind(null, 4);
+window.calculateAndDisplaySet5Statistics = calculateAndDisplaySetStatistics.bind(null, 5);
 window.calculateAndDisplayAllSetStatistics = calculateAndDisplayAllSetStatistics;

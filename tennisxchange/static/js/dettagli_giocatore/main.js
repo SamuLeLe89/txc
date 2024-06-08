@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
         calculateAndDisplaySet1Statistics();
         calculateAndDisplaySet2Statistics();
         calculateAndDisplaySet3Statistics();
+        calculateAndDisplaySet4Statistics();
+        calculateAndDisplaySet5Statistics();
     });
 
     document.getElementById('load-all-details').addEventListener('click', function() {
@@ -27,6 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
             calculateAndDisplaySet1Statistics();
             calculateAndDisplaySet2Statistics();
             calculateAndDisplaySet3Statistics();
+            calculateAndDisplaySet4Statistics();
+            calculateAndDisplaySet5Statistics();
         });
     });
 });

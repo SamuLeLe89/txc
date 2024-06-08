@@ -43,7 +43,7 @@
         const statsDiv = document.getElementById(`set-stats-${matchId}`);
         if (statsDiv) {
             statsDiv.innerHTML = statsHTML;
-            statsDiv.style.display = 'block';
+            statsDiv.style.display = 'none';
         } else {
             console.error(`Elemento con ID set-stats-${matchId} non trovato.`);
         }
